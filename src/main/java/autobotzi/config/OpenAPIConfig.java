@@ -1,40 +1,28 @@
 package autobotzi.config;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.security.SecuritySchemes;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@OpenAPIDefinition(info = @Info(title = "Autobotzi", version = "v1"))
+@OpenAPIDefinition(info = @Info(title = "Autobotzi", version = "v1"),security = {
+        @SecurityRequirement(name = "bearerAuth")
+}
+)
 @SecuritySchemes(value = {
         @SecurityScheme(
-                type = SecuritySchemeType.HTTP,
+                name = "bearerAuth",
+                description = "JWT authentication",
                 scheme = "bearer",
-                bearerFormat = "JWT"
-        )
+                type = SecuritySchemeType.HTTP,
+                bearerFormat = "JWT",
+                in = SecuritySchemeIn.HEADER)
 })
 public class OpenAPIConfig {
-//    @Bean
-//    public Docket api(ServletContext servletContext) {
-//        return new Docket(DocumentationType.SWAGGER_2)
-//                .securitySchemes(List.of(apiKey()))
-//                .securityContexts(Collections.singletonList(securityContext()));
-//    }
-//
-//    private SecurityContext securityContext() {
-//        return SecurityContext.builder().securityReferences(defaultAuth()).forPaths(PathSelectors.regex("/.*")).build();
-//    }
-//
-//    private List<SecurityReference> defaultAuth() {
-//        final AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
-//        final AuthorizationScope[] authorizationScopes = new AuthorizationScope[]{authorizationScope};
-//        return Collections.singletonList(new SecurityReference("Bearer", authorizationScopes));
-//    }
-//
-//    private ApiKey apiKey() {
-//        return new ApiKey("Bearer", "Authorization", "header");
-//    }
+
 }
