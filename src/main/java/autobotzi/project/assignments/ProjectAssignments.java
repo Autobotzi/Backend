@@ -1,0 +1,30 @@
+package autobotzi.project.assignments;
+
+import autobotzi.project.Projects;
+import autobotzi.role.Roles;
+import autobotzi.user.Users;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table(name = "project_assignments")
+public class ProjectAssignments {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    private String status;
+    @ManyToOne
+    @JoinColumn(name = "project_id")
+    private Projects project;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private Users user;
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Roles role;
+}
