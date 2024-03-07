@@ -24,10 +24,10 @@ public class AuthenticationController {
         return authenticationService.SignUpAdmin(signUpAdminRequest.getSignUpRequest()
                 , signUpAdminRequest.getOrganizationsDto());
     }
-    @PostMapping("/sign-up")
-    public ResponseEntity<Users> signUp(@RequestBody SignUpRequest signUpRequest) {
-        return ResponseEntity.ok(authenticationService.signUpUser(signUpRequest));
 
+    @PostMapping("/sign-up")
+    public Users signUp(@RequestBody SignUpRequest signUpRequest, @RequestParam String adminEmail) {
+        return authenticationService.signUpUser(signUpRequest, adminEmail);
     }
     @PostMapping("/sign-in")
     public ResponseEntity<JwtAuthenticationResponse> signIn(@RequestBody SignInRequest signInRequest) {

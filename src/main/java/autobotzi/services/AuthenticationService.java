@@ -8,7 +8,8 @@ import autobotzi.organizations.util.OrganizationsDto;
 import autobotzi.user.Users;
 
 public interface AuthenticationService {
-    Users signUpUser(SignUpRequest user);
+    Users signUpUser(SignUpRequest user, String adminEmail);
+
 
     Users SignUpAdmin(SignUpRequest user, OrganizationsDto organizationsDto);
     JwtAuthenticationResponse signIn(SignInRequest signInRequest);

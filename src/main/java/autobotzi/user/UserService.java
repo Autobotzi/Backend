@@ -1,5 +1,6 @@
 package autobotzi.user;
 
+import autobotzi.user.dto.AdminEmailDto;
 import autobotzi.user.dto.UsersAdminViewDto;
 import autobotzi.user.dto.UsersDto;
 import autobotzi.user.dto.UsersPreViewDto;
@@ -26,4 +27,7 @@ public interface UserService {
     Long countUsers();
 
     Long getUsersIdByEmail(String email);
+
+
+    List<AdminEmailDto> getAllAdminEmails();
 }

@@ -1,13 +1,12 @@
 package autobotzi.user.impl;
 
-import autobotzi.departments.DepartmentsMembersRepository;
 import autobotzi.departments.DepartmentsRepository;
 import autobotzi.departments.impl.NotFoundException;
-import autobotzi.organizations.Organizations;
-import autobotzi.organizations.OrganizationsRepository;
 import autobotzi.user.UserRepository;
 import autobotzi.user.UserService;
 import autobotzi.user.Users;
+import autobotzi.user.Utils.Role;
+import autobotzi.user.dto.AdminEmailDto;
 import autobotzi.user.dto.UsersAdminViewDto;
 import autobotzi.user.dto.UsersDto;
 import autobotzi.user.dto.UsersPreViewDto;
@@ -18,7 +17,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -63,6 +61,12 @@ public class UserServiceImpl implements UserService {
         }).collect(Collectors.toList());
     }
 
+    public List<AdminEmailDto> getAllAdminEmails() {
+        return userRepository.findByRole(Role.ADMIN).stream()
+                .map(admin -> new AdminEmailDto(admin.getEmail()))
+                .collect(Collectors.toList());
+    }
+
     public List<UsersPreViewDto> getallUsersforPreView() {
         return userRepository.findAll().stream().map(users -> {
             UsersPreViewDto usersPreViewDto = new UsersPreViewDto();
@@ -99,6 +103,10 @@ public class UserServiceImpl implements UserService {
     public Long getUsersIdByEmail(String email) {
         return userRepository.getIdByEmail(email);
     }
+
+
+
+
 }
 
 

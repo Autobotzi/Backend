@@ -1,10 +1,12 @@
 package autobotzi.user;
 
+import autobotzi.user.dto.AdminEmailDto;
 import autobotzi.user.dto.UsersAdminViewDto;
 import autobotzi.user.dto.UsersDto;
 import autobotzi.user.dto.UsersPreViewDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,9 +14,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
+@PreAuthorize("hasRole('admin')")
 public class UserController {
 
     private final UserService userService;
+
 
     @GetMapping
     public ResponseEntity<String> getUser() {
@@ -35,11 +39,15 @@ public class UserController {
         return userService.getallUsersforAdmin();
     }
 
+    @PreAuthorize("hasRole('user')")
     @GetMapping("/preview")
     public List<UsersPreViewDto> getAllUsersPreView() {
         return userService.getallUsersforPreView();
     }
-
+    @GetMapping("/admin-emails")
+    public List<AdminEmailDto> getAllAdminEmails() {
+        return userService.getAllAdminEmails();
+    }
 
     @GetMapping("/{email}")
     public Users getUserByEmail(@PathVariable String email) {

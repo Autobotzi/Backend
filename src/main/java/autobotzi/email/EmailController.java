@@ -1,4 +1,4 @@
-package autobotzi.Email;
+package autobotzi.email;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;

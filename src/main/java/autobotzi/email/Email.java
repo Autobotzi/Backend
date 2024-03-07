@@ -1,4 +1,4 @@
-package autobotzi.Email;
+package autobotzi.email;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,4 +13,5 @@ public class Email {
     private String subject;
 
     private String message;
+
 }

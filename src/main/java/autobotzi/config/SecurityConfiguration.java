@@ -34,9 +34,12 @@ public class SecurityConfiguration {
                         request
                                 .requestMatchers("/auth/**").permitAll()
                                 .requestMatchers("/admin/**").hasAnyAuthority(Role.ADMIN.name())
-                                .requestMatchers("/user/**").hasAnyAuthority(Role.USER.name())
-                                .requestMatchers("/department-manager/**").hasAnyAuthority(Role.DEPARTMENT_MANAGER.name())
-                                .requestMatchers("/project-manager/**").hasAnyAuthority(Role.PROJECT_MANAGER.name())
+                                .requestMatchers("/user/**").hasAnyAuthority(Role.USER.name(),Role.ADMIN.name()
+                                        ,Role.DEPARTMENT_MANAGER.name(),Role.PROJECT_MANAGER.name())
+                                .requestMatchers("/department-manager/**").hasAnyAuthority(
+                                        Role.DEPARTMENT_MANAGER.name(),Role.ADMIN.name())
+                                .requestMatchers("/project-manager/**").hasAnyAuthority(Role.PROJECT_MANAGER.name()
+                                ,Role.ADMIN.name())
                                 .requestMatchers("/swagger-ui/**", "/swagger-ui.html/**","/v3/api-docs/**").permitAll()
                                 .anyRequest().authenticated()).sessionManagement(manager ->
                         manager

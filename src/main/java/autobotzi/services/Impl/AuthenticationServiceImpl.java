@@ -34,16 +34,23 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final JwtService jwtService;
     private final OrganizationsRepository organizationsRepository;
-    public Users signUpUser(SignUpRequest user) {
+    public Users signUpUser(SignUpRequest user, String adminEmail) {
+        // Fetch the admin from the database
+        Users admin = userRepository.findByEmail(adminEmail).orElseThrow(() -> new IllegalArgumentException("Admin not found"));
+
+        // Check if the fetched user is an admin
+        if (admin.getRole() != Role.ADMIN) {
+            throw new IllegalArgumentException("Provided user is not an admin");
+        }
 
         Users newUser = new Users();
         newUser.setEmail(user.getEmail());
         newUser.setName(user.getName());
         newUser.setRole(Role.USER);
         newUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        newUser.setOrganization(admin.getOrganization()); // Set the organization of the admin to the new user
 
         return userRepository.save(newUser);
-
     }
     public Users SignUpAdmin(SignUpRequest user, OrganizationsDto organizationsDto) {
         Users newAdmin = new Users();
