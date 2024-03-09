@@ -1,4 +1,4 @@
-package autobotzi.skill;
+package autobotzi.skill.impl;
 
 import autobotzi.skill.SkillEndorsementsRepository;
 import autobotzi.skill.SkillEndorsementsService;
