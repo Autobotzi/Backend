@@ -9,10 +9,11 @@ import java.util.List;
 public interface DepartmentsService {
 
 
-    Departments addDepartment(DepartmentsDto departmentsDto);
+    Departments addDepartment(DepartmentsDto departmentsDto, String adminEmail);
 
     void deleteDepartment(Long id);
     List<DepartmentsResponse> getAllDepartments();
-
+    Departments updateDepartmentManager(String email,String departmentName);
+    void updateDepartmentByDepartmentName(String name,DepartmentsDto departmentsDto);
 
 }

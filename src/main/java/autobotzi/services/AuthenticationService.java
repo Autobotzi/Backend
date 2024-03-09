@@ -15,4 +15,6 @@ public interface AuthenticationService {
     JwtAuthenticationResponse signIn(SignInRequest signInRequest);
 
     JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest);
+
+    Users resetPassword(String email, String newPassword);
 }

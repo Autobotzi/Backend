@@ -1,12 +1,9 @@
 package autobotzi.user;
 
-import autobotzi.user.dto.AdminEmailDto;
-import autobotzi.user.dto.UsersAdminViewDto;
-import autobotzi.user.dto.UsersDto;
-import autobotzi.user.dto.UsersPreViewDto;
+import autobotzi.user.dto.*;
+import autobotzi.user.utils.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,7 +11,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('admin')")
+
 public class UserController {
 
     private final UserService userService;
@@ -24,53 +21,42 @@ public class UserController {
     public ResponseEntity<String> getUser() {
         return ResponseEntity.ok("Hello User");
     }
+
+
     @GetMapping("/all")
-    public List<Users> getAllUsers() {
+    public List<UsersDto> getAll() {
         return userService.getAll();
     }
-
-    @GetMapping("/dto")
-    public List<UsersDto> getAllUsersDto() {
-        return userService.getAllUsers();
+    @GetMapping("/all-admin-view")
+    public List<UsersAdminViewDto> getAllAdminView() {
+        return userService.getAllAdminView();
     }
-
-    @GetMapping("/admin-view")
-    public List<UsersAdminViewDto> getAllUsersAdminView() {
-        return userService.getallUsersforAdmin();
+    @GetMapping("/all-users-with-organizations")
+    public List<UsersOrganizationsDto> getAllUsersWithOrganizations() {
+        return userService.getAllUsersWithOrganizations();
     }
-
-    @PreAuthorize("hasRole('user')")
-    @GetMapping("/preview")
-    public List<UsersPreViewDto> getAllUsersPreView() {
-        return userService.getallUsersforPreView();
+    @GetMapping("/all-preview")
+    public List<UsersPreViewDto> getAllPreview() {
+        return userService.getAllPreView();
     }
-    @GetMapping("/admin-emails")
-    public List<AdminEmailDto> getAllAdminEmails() {
-        return userService.getAllAdminEmails();
+    @GetMapping("/role")
+    public List<UsersDto> getByRole(@RequestParam String role) {
+        return userService.getUsersByRole(role);
     }
-
-    @GetMapping("/{email}")
-    public Users getUserByEmail(@PathVariable String email) {
+    @GetMapping("/get-by-email")
+    public UsersDto getUserByEmail(@RequestParam String email) {
         return userService.getUserByEmail(email);
     }
-
-    @GetMapping("/department/{userId}")
-    public String getDepartmentNameByUserId(@PathVariable Long userId) {
-        return userService.getDepartmentNameByUserId(userId);
+    @GetMapping("/get-by-department")
+    public List<UsersDto> getByDepartment(@RequestParam String departmentName) {
+        return userService.getUsersByDepartment(departmentName);
     }
-
-    @PutMapping("/{email}")
-    public Users updateUser(@PathVariable String email, @RequestBody UsersDto usersDto) {
-        return userService.updateUser(email, usersDto);
+    @PutMapping("/update-role")
+    public UsersDto updateUserRole(@RequestParam String email, @RequestParam String role) {
+        return userService.updateUserRole(email, role);
     }
-
-    @GetMapping("/count")
-    public Long countUsers() {
-        return userService.countUsers();
-    }
-
-    @GetMapping("/email/{email}/id")
-    public Long getUserIdByEmail(@PathVariable String email) {
-        return userService.getUsersIdByEmail(email);
+    @PutMapping("/update-by-email")
+    public UsersDto updateUserByEmail(@RequestParam String email, @RequestParam String name) {
+        return userService.updateUserByEmail(email, name);
     }
 }

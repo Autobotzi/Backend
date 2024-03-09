@@ -7,7 +7,7 @@ import autobotzi.dto.SignUpRequest;
 import autobotzi.organizations.Organizations;
 import autobotzi.organizations.OrganizationsRepository;
 import autobotzi.organizations.util.OrganizationsDto;
-import autobotzi.user.Utils.Role;
+import autobotzi.user.utils.Role;
 import autobotzi.user.Users;
 import autobotzi.user.UserRepository;
 import autobotzi.services.JwtService;
@@ -35,10 +35,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final JwtService jwtService;
     private final OrganizationsRepository organizationsRepository;
     public Users signUpUser(SignUpRequest user, String adminEmail) {
-        // Fetch the admin from the database
+
         Users admin = userRepository.findByEmail(adminEmail).orElseThrow(() -> new IllegalArgumentException("Admin not found"));
 
-        // Check if the fetched user is an admin
         if (admin.getRole() != Role.ADMIN) {
             throw new IllegalArgumentException("Provided user is not an admin");
         }
@@ -48,9 +47,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         newUser.setName(user.getName());
         newUser.setRole(Role.USER);
         newUser.setPassword(passwordEncoder.encode(user.getPassword()));
-        newUser.setOrganization(admin.getOrganization()); // Set the organization of the admin to the new user
+        newUser.setOrganization(admin.getOrganization());
 
         return userRepository.save(newUser);
+    }
+    public Users resetPassword(String email, String newPassword) {
+        Users user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+
+        return userRepository.save(user);
     }
     public Users SignUpAdmin(SignUpRequest user, OrganizationsDto organizationsDto) {
         Users newAdmin = new Users();

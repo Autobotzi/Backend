@@ -19,12 +19,16 @@ public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
 
-    @PostMapping("/sign-upAdmin")
+    @PostMapping("/sign-up-admin")
     public Users signUpAdmin(@RequestBody SignUpAdminRequest signUpAdminRequest) {
         return authenticationService.SignUpAdmin(signUpAdminRequest.getSignUpRequest()
                 , signUpAdminRequest.getOrganizationsDto());
     }
 
+    @PostMapping("/reset-password")
+    public Users resetPassword(@RequestParam String email, @RequestParam String newPassword) {
+        return authenticationService.resetPassword(email, newPassword);
+    }
     @PostMapping("/sign-up")
     public Users signUp(@RequestBody SignUpRequest signUpRequest, @RequestParam String adminEmail) {
         return authenticationService.signUpUser(signUpRequest, adminEmail);

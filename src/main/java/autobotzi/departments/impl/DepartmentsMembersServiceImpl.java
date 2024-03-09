@@ -1,9 +1,8 @@
 package autobotzi.departments.impl;
 
-import autobotzi.departments.DepartmentsMembers;
-import autobotzi.departments.DepartmentsMembersRepository;
-import autobotzi.departments.DepartmentsMembersService;
-import autobotzi.departments.DepartmentsRepository;
+import autobotzi.departments.*;
+import autobotzi.departments.dto.DepartmentsMembersDto;
+import autobotzi.user.UserRepository;
 import autobotzi.user.Users;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,23 +18,52 @@ public class DepartmentsMembersServiceImpl implements DepartmentsMembersService 
 
     private final DepartmentsMembersRepository departmentsMembersRepository;
     private final DepartmentsRepository departmentsRepository;
+    private final UserRepository userRepository;
+    public DepartmentsMembers assignDepartmentToUser(DepartmentsMembersDto departmentsMembersDto) {
+        Users user = userRepository.findByEmail(departmentsMembersDto.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-    public List<Users> getUsersByDepartmentName(String departmentName) {
+        Departments department = departmentsRepository.findByName(departmentsMembersDto.getDepartment())
+                .orElseThrow(() -> new IllegalArgumentException("Department not found"));
 
-        List<DepartmentsMembers> departmentsMembers = departmentsMembersRepository.findByDepartmentName(departmentName);
-        return departmentsMembers.stream()
-                .map(DepartmentsMembers::getUser)
+        DepartmentsMembers departmentsMembers = new DepartmentsMembers();
+        departmentsMembers.setUser(user);
+        departmentsMembers.setDepartment(department);
+
+        return departmentsMembersRepository.save(departmentsMembers);
+    }
+    public List<DepartmentsMembersDto> getDepartmentsMembers() {
+        return departmentsMembersRepository.findAll().stream()
+                .map(departmentsMembers -> DepartmentsMembersDto.builder()
+                        .email(departmentsMembers.getUser().getEmail())
+                        .department(departmentsMembers.getDepartment().getName())
+                        .build())
                 .collect(Collectors.toList());
     }
-    public long countUsersByDepartmentName(String departmentName) {
-        List<DepartmentsMembers> departmentsMembers = departmentsMembersRepository.findByDepartmentName(departmentName);
-        return departmentsMembers.size();
+    public List<DepartmentsMembersDto> getDepartmentsMembersByDepartment(String departmentName) {
+        return departmentsMembersRepository.findAllByDepartmentName(departmentName).stream()
+                .map(departmentsMembers -> DepartmentsMembersDto.builder()
+                        .email(departmentsMembers.getUser().getEmail())
+                        .department(departmentsMembers.getDepartment().getName())
+                        .build())
+                .collect(Collectors.toList());
+    }
+    public Integer getDepartmentMembersCount(String departmentName) {
+        return departmentsMembersRepository.findAllByDepartmentName(departmentName).size();
+    }
+
+    public void deleteDepartmentMember(String email) {
+        Users user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        List<DepartmentsMembers> departmentsMembersList = departmentsMembersRepository.findByUser(user);
+
+        if (departmentsMembersList.isEmpty()) {
+            throw new IllegalArgumentException("Department member not found");
+        }
+
+        departmentsMembersRepository.deleteAll(departmentsMembersList);
     }
 
 
-
-
-    public long countDepartmentsMembers() {
-        return departmentsMembersRepository.count();
-    }
 }

@@ -1,6 +1,6 @@
 package autobotzi.config;
 
-import autobotzi.user.Utils.Role;
+import autobotzi.user.utils.Role;
 import autobotzi.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

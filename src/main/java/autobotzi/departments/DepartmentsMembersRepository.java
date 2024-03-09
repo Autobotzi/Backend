@@ -1,5 +1,6 @@
 package autobotzi.departments;
 
+import autobotzi.user.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -16,4 +17,10 @@ public interface DepartmentsMembersRepository extends JpaRepository<DepartmentsM
     DepartmentsMembers findByUserId(Long userId);
 
     DepartmentsMembers findByDepartmentId(Long departmentId);
+
+    Collection<DepartmentsMembers> findByDepartment(Departments department);
+
+    Collection<DepartmentsMembers> findAllByDepartmentName(String departmentName);
+
+    List<DepartmentsMembers> findByUser(Users user);
 }

@@ -1,6 +1,6 @@
 package autobotzi.user.dto;
 
-import autobotzi.user.Utils.Role;
+import autobotzi.user.utils.Role;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

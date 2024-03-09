@@ -1,33 +1,23 @@
 package autobotzi.user;
 
-import autobotzi.user.dto.AdminEmailDto;
-import autobotzi.user.dto.UsersAdminViewDto;
-import autobotzi.user.dto.UsersDto;
-import autobotzi.user.dto.UsersPreViewDto;
+import autobotzi.user.dto.*;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
 
 public interface UserService {
     UserDetailsService userDetailsService();
-    List<UsersDto> getAllUsers();
 
-    List<Users> getAll();
+    List<UsersDto> getAll();
 
-    List<UsersAdminViewDto> getallUsersforAdmin();
+    List<UsersAdminViewDto> getAllAdminView();
 
-    List<UsersPreViewDto> getallUsersforPreView();
+    List<UsersOrganizationsDto> getAllUsersWithOrganizations();
 
-    Users getUserByEmail(String email);
-
-    String getDepartmentNameByUserId(Long userId);
-
-    Users updateUser(String email, UsersDto usersDto);
-
-    Long countUsers();
-
-    Long getUsersIdByEmail(String email);
-
-
-    List<AdminEmailDto> getAllAdminEmails();
+    List<UsersPreViewDto> getAllPreView();
+    List<UsersDto> getUsersByRole(String role);
+    UsersDto updateUserRole(String email, String role);
+    UsersDto getUserByEmail(String email);
+    UsersDto updateUserByEmail(String email, String name);
+    List<UsersDto> getUsersByDepartment(String departmentName);
 }

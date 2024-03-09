@@ -1,4 +1,4 @@
-package autobotzi.user.Utils;
+package autobotzi.user.utils;
 
 public enum Role {
 

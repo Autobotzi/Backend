@@ -18,7 +18,7 @@ public class EmailServiceImpl implements EmailService{
 
             SimpleMailMessage mailMessage
                     = new SimpleMailMessage();
-            String signUpLink = "http://localhost:8080/swagger-ui/index.html#/authentication-controller/signUp \n\n " + email.getRecipient();
+            String signUpLink = "http://localhost:8080/swagger-ui/index.html#/authentication-controller/signUp/ \n\n ";
 
             mailMessage.setFrom(sender);
             mailMessage.setTo(email.getRecipient());

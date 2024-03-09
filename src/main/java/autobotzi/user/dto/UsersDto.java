@@ -1,13 +1,10 @@
 package autobotzi.user.dto;
 
-import autobotzi.user.Utils.Role;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import autobotzi.user.utils.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-
-import java.util.Date;
 
 @Data
 @AllArgsConstructor

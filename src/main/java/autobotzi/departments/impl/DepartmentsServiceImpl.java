@@ -1,11 +1,11 @@
 package autobotzi.departments.impl;
 
-import autobotzi.departments.Departments;
-import autobotzi.departments.DepartmentsRepository;
-import autobotzi.departments.DepartmentsService;
+import autobotzi.departments.*;
 import autobotzi.departments.dto.DepartmentsDto;
 import autobotzi.departments.dto.DepartmentsResponse;
+import autobotzi.user.UserRepository;
 import autobotzi.user.Users;
+import autobotzi.user.utils.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +17,8 @@ import java.util.stream.Collectors;
 public class DepartmentsServiceImpl implements DepartmentsService {
 
     private final DepartmentsRepository departmentsRepository;
+    private final UserRepository userRepository;
+    private final DepartmentsMembersRepository departmentsMembersRepository;
 
 
     public List<DepartmentsResponse> getAllDepartments() {
@@ -34,15 +36,44 @@ public class DepartmentsServiceImpl implements DepartmentsService {
                 .collect(Collectors.toList());
     }
 
-    public Departments addDepartment(DepartmentsDto departmentsDto) {
+    public Departments addDepartment(DepartmentsDto departmentsDto, String adminEmail) {
+        Users admin = userRepository.findByEmail(adminEmail)
+                .orElseThrow(() -> new IllegalArgumentException("Admin not found"));
+
         Departments department = Departments.builder()
                 .name(departmentsDto.getName())
                 .description(departmentsDto.getDescription())
+                .organization(admin.getOrganization())
                 .build();
+
         return departmentsRepository.save(department);
     }
+    public Departments updateDepartmentManager(String email, String departmentName) {
+        Users user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
+        user.setRole(Role.DEPARTMENT_MANAGER);
+        userRepository.save(user);
 
+        Departments department = departmentsRepository.findByName(departmentName)
+                .orElseThrow(() -> new IllegalArgumentException("Department not found"));
+
+        DepartmentsMembers departmentsMembers = new DepartmentsMembers();
+        departmentsMembers.setUser(user);
+        departmentsMembers.setDepartment(department);
+        departmentsMembersRepository.save(departmentsMembers);
+
+        department.setUser(user);
+
+        return departmentsRepository.save(department);
+    }
+    public void updateDepartmentByDepartmentName(String name,DepartmentsDto departmentsDto) {
+        Departments department = departmentsRepository.findByName(name)
+                .orElseThrow(() -> new IllegalArgumentException("Department not found"));
+        department.setName(departmentsDto.getName());
+        department.setDescription(departmentsDto.getDescription());
+        departmentsRepository.save(department);
+    }
     public void deleteDepartment(Long id) {
         departmentsRepository.deleteById(id);
     }

@@ -8,9 +8,9 @@ import java.util.List;
 public interface DepartmentsMembersService {
 
 
-    long countDepartmentsMembers();
-
-    List<Users> getUsersByDepartmentName(String departmentName);
-
-    long countUsersByDepartmentName(String departmentName);
+    DepartmentsMembers assignDepartmentToUser(DepartmentsMembersDto departmentsMembersDto);
+    List<DepartmentsMembersDto> getDepartmentsMembers();
+    List<DepartmentsMembersDto> getDepartmentsMembersByDepartment(String departmentName);
+    Integer getDepartmentMembersCount(String departmentName);
+    void deleteDepartmentMember(String email);
 }

@@ -1,6 +1,6 @@
 package autobotzi.user;
 
-import autobotzi.user.Utils.Role;
+import autobotzi.user.utils.Role;
 import autobotzi.organizations.Organizations;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;

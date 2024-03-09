@@ -15,6 +15,5 @@ public class UsersPreViewDto {
 
     private String email;
 
-    private String department;
 
 }

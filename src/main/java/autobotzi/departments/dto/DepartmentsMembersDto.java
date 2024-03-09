@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 @Builder
 public class DepartmentsMembersDto {
 
-    private String name;
+    private String email;
     private String department;
 
 }

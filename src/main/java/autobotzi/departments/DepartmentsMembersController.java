@@ -3,10 +3,7 @@ package autobotzi.departments;
 import autobotzi.departments.dto.DepartmentsMembersDto;
 import autobotzi.user.Users;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -18,17 +15,27 @@ public class DepartmentsMembersController {
     private final DepartmentsMembersService departmentsMembersService;
 
 
-    @GetMapping("/department")
-    public List<Users> getUsersByDepartmentName(@RequestParam String departmentName) {
-        return departmentsMembersService.getUsersByDepartmentName(departmentName);
+
+    @PostMapping
+    public DepartmentsMembers assignDepartmentToUser(@RequestBody DepartmentsMembersDto departmentsMembersDto) {
+        return departmentsMembersService.assignDepartmentToUser(departmentsMembersDto);
     }
-    @GetMapping("/count-department")
-    public long countUsersByDepartmentName(@RequestParam String departmentName) {
-        return departmentsMembersService.countUsersByDepartmentName(departmentName);
+    @GetMapping
+    public List<DepartmentsMembersDto> getDepartmentsMembers() {
+        return departmentsMembersService.getDepartmentsMembers();
+    }
+    @GetMapping("/by-department")
+    public List<DepartmentsMembersDto> getDepartmentsMembersByDepartment(@RequestParam String departmentName) {
+        return departmentsMembersService.getDepartmentsMembersByDepartment(departmentName);
+    }
+    @GetMapping("/count")
+    public Integer getDepartmentMembersCount(@RequestParam String departmentName) {
+        return departmentsMembersService.getDepartmentMembersCount(departmentName);
+    }
+    @DeleteMapping
+    public void deleteDepartmentMember(@RequestParam String email) {
+        departmentsMembersService.deleteDepartmentMember(email);
     }
 
-    @GetMapping("/count")
-    public long countDepartmentsMembers() {
-        return departmentsMembersService.countDepartmentsMembers();
-    }
+
 }
