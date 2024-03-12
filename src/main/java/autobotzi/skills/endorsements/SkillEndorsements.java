@@ -1,4 +1,4 @@
-package autobotzi.skill;
+package autobotzi.skills;
 
 import autobotzi.user.skill.UserSkills;
 import jakarta.persistence.*;
