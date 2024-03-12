@@ -1,6 +1,5 @@
-package autobotzi.skill;
+package autobotzi.skills;
 
-import autobotzi.skill.Skills;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

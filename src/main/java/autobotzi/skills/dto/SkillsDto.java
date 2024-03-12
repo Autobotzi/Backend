@@ -1,4 +1,4 @@
-package autobotzi.skill.dto;
+package autobotzi.skills.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,5 +15,5 @@ public class SkillsDto {
 
     private String description;
 
-    private Integer category;
+    private String category;
 }

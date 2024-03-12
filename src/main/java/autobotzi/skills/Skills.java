@@ -1,4 +1,4 @@
-package autobotzi.skill;
+package autobotzi.skills;
 
 import autobotzi.user.Users;
 import jakarta.persistence.*;
@@ -23,7 +23,7 @@ public class Skills {
 
     private String description;
 
-    private Integer category;
+    private String category;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

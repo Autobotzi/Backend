@@ -1,7 +1,7 @@
 package autobotzi.project.skill;
 
 import autobotzi.project.Projects;
-import autobotzi.skill.Skills;
+import autobotzi.skills.Skills;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

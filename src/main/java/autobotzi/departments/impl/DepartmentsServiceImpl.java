@@ -1,6 +1,7 @@
 package autobotzi.departments.impl;
 
 import autobotzi.departments.*;
+import autobotzi.departments.dto.DepartmentAdminView;
 import autobotzi.departments.dto.DepartmentsDto;
 import autobotzi.departments.dto.DepartmentsResponse;
 import autobotzi.user.UserRepository;
@@ -27,6 +28,19 @@ public class DepartmentsServiceImpl implements DepartmentsService {
                     DepartmentsResponse departmentDto = new DepartmentsResponse();
                     departmentDto.setName(department.getName());
                     departmentDto.setDescription(department.getDescription());
+                    Users user = department.getUser();
+                    if (user != null) {
+                        departmentDto.setDepartmentManager(user.getName());
+                    }
+                    return departmentDto;
+                })
+                .collect(Collectors.toList());
+    }
+    public List<DepartmentAdminView> getDepartments() {
+        return departmentsRepository.findAll().stream()
+                .map(department -> {
+                    DepartmentAdminView departmentDto = new DepartmentAdminView();
+                    departmentDto.setName(department.getName());
                     Users user = department.getUser();
                     if (user != null) {
                         departmentDto.setDepartmentManager(user.getName());
@@ -67,6 +81,7 @@ public class DepartmentsServiceImpl implements DepartmentsService {
 
         return departmentsRepository.save(department);
     }
+
     public void updateDepartmentByDepartmentName(String name,DepartmentsDto departmentsDto) {
         Departments department = departmentsRepository.findByName(name)
                 .orElseThrow(() -> new IllegalArgumentException("Department not found"));

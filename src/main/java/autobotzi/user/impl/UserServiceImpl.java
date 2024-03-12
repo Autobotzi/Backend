@@ -91,7 +91,7 @@ public class UserServiceImpl implements UserService {
                         .email(user.getEmail())
                         .role(user.getRole())
                         .build())
-                .orElse(null);
+                .orElseThrow(()-> new IllegalArgumentException("User skills not found"));
     }
     public List<UsersDto> getUsersByDepartment(String departmentName) {
         Departments department = departmentsRepository.findByName(departmentName)

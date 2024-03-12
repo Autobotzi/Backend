@@ -56,7 +56,8 @@ public class DepartmentsMembersServiceImpl implements DepartmentsMembersService 
         Users user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        List<DepartmentsMembers> departmentsMembersList = departmentsMembersRepository.findByUser(user);
+        List<DepartmentsMembers> departmentsMembersList = departmentsMembersRepository
+                .findByUser(user);
 
         if (departmentsMembersList.isEmpty()) {
             throw new IllegalArgumentException("Department member not found");

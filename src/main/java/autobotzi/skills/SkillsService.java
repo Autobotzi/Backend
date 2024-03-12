@@ -1,6 +1,6 @@
-package autobotzi.skill;
+package autobotzi.skills;
 
-import autobotzi.skill.dto.SkillsDto;
+import autobotzi.skills.dto.SkillsDto;
 
 import java.util.List;
 

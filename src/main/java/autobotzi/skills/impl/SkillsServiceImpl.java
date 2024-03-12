@@ -1,9 +1,9 @@
-package autobotzi.skill.impl;
+package autobotzi.skills.impl;
 
-import autobotzi.skill.Skills;
-import autobotzi.skill.SkillsRepository;
-import autobotzi.skill.SkillsService;
-import autobotzi.skill.dto.SkillsDto;
+import autobotzi.skills.Skills;
+import autobotzi.skills.SkillsRepository;
+import autobotzi.skills.SkillsService;
+import autobotzi.skills.dto.SkillsDto;
 import autobotzi.user.UserRepository;
 import autobotzi.user.Users;
 import lombok.RequiredArgsConstructor;

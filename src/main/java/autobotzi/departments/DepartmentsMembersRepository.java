@@ -12,12 +12,6 @@ import java.util.Optional;
 public interface DepartmentsMembersRepository extends JpaRepository<DepartmentsMembers, Long> {
 
 
-    List<DepartmentsMembers> findByDepartmentName(String departmentName);
-
-    DepartmentsMembers findByUserId(Long userId);
-
-    DepartmentsMembers findByDepartmentId(Long departmentId);
-
     Collection<DepartmentsMembers> findByDepartment(Departments department);
 
     Collection<DepartmentsMembers> findAllByDepartmentName(String departmentName);

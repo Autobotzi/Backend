@@ -1,5 +1,6 @@
 package autobotzi.departments;
 
+import autobotzi.departments.dto.DepartmentAdminView;
 import autobotzi.departments.dto.DepartmentsDto;
 import autobotzi.departments.dto.DepartmentsResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,10 @@ public class DepartmentsController {
     @GetMapping
     public List<DepartmentsResponse> getAllDepartments() {
         return departmentsService.getAllDepartments();
+    }
+    @GetMapping("/all")
+    public List<DepartmentAdminView> getDepartments() {
+        return departmentsService.getDepartments();
     }
 
     @PostMapping

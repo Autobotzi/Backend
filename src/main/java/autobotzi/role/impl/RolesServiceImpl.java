@@ -39,7 +39,6 @@ public class RolesServiceImpl implements RolesService {
         Roles roles = rolesRepository.findByName(name)
                 .orElseThrow(() -> new IllegalArgumentException("Role not found"));
 
-
         rolesRepository.delete(roles);
     }
 
