@@ -16,5 +16,5 @@ public interface DepartmentsMembersRepository extends JpaRepository<DepartmentsM
 
     Collection<DepartmentsMembers> findAllByDepartmentName(String departmentName);
 
-    List<DepartmentsMembers> findByUser(Users user);
+    Optional<List<DepartmentsMembers>> findByUser(Users user);
 }

@@ -22,4 +22,13 @@ public class EmailController {
             return status;
         }
     }
+    @PostMapping("/send-admin")
+    public String sendMailAdmin(@RequestBody Email email) {
+        {
+            String status
+                    = emailService.sendSimpleMailAdmin(email);
+
+            return status;
+        }
+    }
 }

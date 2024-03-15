@@ -1,10 +1,12 @@
 package autobotzi.project.assignments;
 
 import autobotzi.project.Projects;
+import autobotzi.project.assignments.utils.StatusAssignments;
 import autobotzi.role.Roles;
 import autobotzi.user.Users;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,12 +14,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Builder
 @Table(name = "project_assignments")
 public class ProjectAssignments {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String status;
+    private StatusAssignments statusAssignments;
     @ManyToOne
     @JoinColumn(name = "project_id")
     private Projects project;

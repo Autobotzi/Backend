@@ -4,6 +4,7 @@ import autobotzi.departments.*;
 import autobotzi.departments.dto.DepartmentsMembersDto;
 import autobotzi.user.UserRepository;
 import autobotzi.user.Users;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class DepartmentsMembersServiceImpl implements DepartmentsMembersService {
 
@@ -20,17 +22,28 @@ public class DepartmentsMembersServiceImpl implements DepartmentsMembersService 
     private final DepartmentsRepository departmentsRepository;
     private final UserRepository userRepository;
     public DepartmentsMembers assignDepartmentToUser(DepartmentsMembersDto departmentsMembersDto) {
-        Users user = userRepository.findByEmail(departmentsMembersDto.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-
-        Departments department = departmentsRepository.findByName(departmentsMembersDto.getDepartment())
-                .orElseThrow(() -> new IllegalArgumentException("Department not found"));
-
-        DepartmentsMembers departmentsMembers = new DepartmentsMembers();
-        departmentsMembers.setUser(user);
-        departmentsMembers.setDepartment(department);
-
-        return departmentsMembersRepository.save(departmentsMembers);
+    return departmentsMembersRepository.save(
+            userRepository.findByEmail(departmentsMembersDto.getEmail())
+                    .map(user -> DepartmentsMembers.builder()
+                            .user(user)
+                            .department(departmentsRepository.findByName(departmentsMembersDto.getDepartment())
+                                    .orElseThrow(() -> new IllegalArgumentException("Department not found")))
+                            .build())
+                    .orElseThrow(() -> new IllegalArgumentException("User not found")
+                    ));
+    }
+    public DepartmentsMembers updateDepartmentToUser(DepartmentsMembersDto departmentsMembersDto) {
+        return departmentsMembersRepository.save(
+                userRepository.findByEmail(departmentsMembersDto.getEmail())
+                        .map(user -> departmentsMembersRepository.findByUser(user)
+                                .map(departmentsMembers -> DepartmentsMembers.builder()
+                                        .user(user)
+                                        .department(departmentsRepository.findByName(departmentsMembersDto.getDepartment())
+                                                .orElseThrow(() -> new IllegalArgumentException("Department not found")))
+                                        .build())
+                                .orElseThrow(() -> new IllegalArgumentException("Department member not found")))
+                        .orElseThrow(() -> new IllegalArgumentException("User not found")
+                        ));
     }
     public List<DepartmentsMembersDto> getDepartmentsMembers() {
         return departmentsMembersRepository.findAll().stream()
@@ -53,17 +66,12 @@ public class DepartmentsMembersServiceImpl implements DepartmentsMembersService 
     }
 
     public void deleteDepartmentMember(String email) {
-        Users user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-
-        List<DepartmentsMembers> departmentsMembersList = departmentsMembersRepository
-                .findByUser(user);
-
-        if (departmentsMembersList.isEmpty()) {
-            throw new IllegalArgumentException("Department member not found");
-        }
-
-        departmentsMembersRepository.deleteAll(departmentsMembersList);
+        departmentsMembersRepository.deleteAll(
+                userRepository.findByEmail(email)
+                        .map(user -> departmentsMembersRepository.findByUser(user)
+                                .orElseThrow(() -> new IllegalArgumentException("Department member not found")))
+                        .orElseThrow(() -> new IllegalArgumentException("User not found"))
+        );
     }
 
 

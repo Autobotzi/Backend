@@ -16,4 +16,5 @@ public class SkillEndorsementsDto {
         @Lob
         private String description;
         private String projectLink;
+
 }

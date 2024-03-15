@@ -21,8 +21,7 @@ public class AuthenticationController {
 
     @PostMapping("/sign-up-admin")
     public Users signUpAdmin(@RequestBody SignUpAdminRequest signUpAdminRequest) {
-        return authenticationService.SignUpAdmin(signUpAdminRequest.getSignUpRequest()
-                , signUpAdminRequest.getOrganizationsDto());
+        return authenticationService.SignUpAdmin(signUpAdminRequest);
     }
 
     @PostMapping("/reset-password")

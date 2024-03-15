@@ -32,4 +32,24 @@ public class EmailServiceImpl implements EmailService{
             return "Error while Sending Mail";
         }
     }
+    public String sendSimpleMailAdmin(Email email) {
+
+        try {
+
+            SimpleMailMessage mailMessage
+                    = new SimpleMailMessage();
+            String signUpLink = "https://autobotzi-ccec90c77ecb.herokuapp.com/swagger-ui/index.html#/authentication-controller/signUpAdmin \n\n ";
+
+            mailMessage.setFrom(sender);
+            mailMessage.setTo(email.getRecipient());
+            mailMessage.setText(email.getMessage());
+            mailMessage.setSubject(email.getSubject());
+            mailMessage.setText(email.getMessage() + "\n\n" + signUpLink);
+
+            javaMailSender.send(mailMessage);
+            return "Mail Sent Successfully...";
+        } catch (Exception e) {
+            return "Error while Sending Mail";
+        }
+    }
 }

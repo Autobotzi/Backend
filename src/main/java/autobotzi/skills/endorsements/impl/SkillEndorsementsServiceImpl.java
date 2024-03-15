@@ -26,8 +26,10 @@ public class SkillEndorsementsServiceImpl implements SkillEndorsementsService {
     private final UserSkillsRepository userSkillsRepository;
     @Transactional
     public SkillEndorsementsDto addEndorsementToUserSkill(String email, SkillEndorsementsDto skillEndorsementsDto) {
-        Users user = userRepository.findByEmail(email).orElseThrow();
-        UserSkills userSkill = userSkillsRepository.findByUser(user).orElseThrow();
+        Users user = userRepository.findByEmail(email).orElseThrow(()->
+                new IllegalArgumentException("user not found"));
+        UserSkills userSkill = userSkillsRepository.findByUser(user).orElseThrow(()->
+                new IllegalArgumentException("userskill not found"));
 
         SkillEndorsements skillEndorsements = SkillEndorsements.builder()
                 .title(skillEndorsementsDto.getTitle())
@@ -56,8 +58,10 @@ public class SkillEndorsementsServiceImpl implements SkillEndorsementsService {
     }
     @Transactional
     public SkillEndorsements updateSkillEndorsementsByTitle(String email, String title, SkillEndorsementsDto skillEndorsementsDto) {
-        Users user = userRepository.findByEmail(email).orElseThrow();
-        UserSkills userSkill = userSkillsRepository.findByUser(user).orElseThrow();
+        Users user = userRepository.findByEmail(email).orElseThrow(()->
+                new IllegalArgumentException("user not found"));
+        UserSkills userSkill = userSkillsRepository.findByUser(user).orElseThrow(()->
+                new IllegalArgumentException("userskill not found"));
         SkillEndorsements skillEndorsements = skillEndorsementsRepository.findByUserSkill(userSkill).orElseThrow();
         skillEndorsements.setTitle(skillEndorsementsDto.getTitle());
         skillEndorsements.setDescription(skillEndorsementsDto.getDescription());
@@ -75,8 +79,6 @@ public class SkillEndorsementsServiceImpl implements SkillEndorsementsService {
                ->new IllegalArgumentException("userskill not found"));
 
        skillEndorsementsRepository.delete(skillEndorsement);
-
-
     }
 
 }

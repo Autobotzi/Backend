@@ -4,6 +4,7 @@ import autobotzi.project.Projects;
 import autobotzi.skills.Skills;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Builder
 @Table(name = "project_skills")
 public class ProjectSkills {
     @Id

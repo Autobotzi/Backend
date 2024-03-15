@@ -7,6 +7,7 @@ import autobotzi.dto.SignUpRequest;
 import autobotzi.organizations.Organizations;
 import autobotzi.organizations.OrganizationsRepository;
 import autobotzi.organizations.util.OrganizationsDto;
+import autobotzi.services.dto.SignUpAdminRequest;
 import autobotzi.user.utils.Role;
 import autobotzi.user.Users;
 import autobotzi.user.UserRepository;
@@ -59,13 +60,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         return userRepository.save(user);
     }
-    public Users SignUpAdmin(SignUpRequest user, OrganizationsDto organizationsDto) {
+    public Users SignUpAdmin(SignUpAdminRequest signUpAdminRequest) {
         Users newAdmin = new Users();
-        newAdmin.setEmail(user.getEmail());
-        newAdmin.setName(user.getName());
+        newAdmin.setEmail(signUpAdminRequest.getSignUpRequest().getEmail());
+        newAdmin.setName(signUpAdminRequest.getSignUpRequest().getName());
         newAdmin.setRole(Role.ADMIN);
-        newAdmin.setPassword(passwordEncoder.encode(user.getPassword()));
-        Organizations organization = mapToEntity(organizationsDto);
+        newAdmin.setPassword(passwordEncoder.encode(signUpAdminRequest.getSignUpRequest().getPassword()));
+        Organizations organization = mapToEntity(signUpAdminRequest.getOrganizationsDto());
         newAdmin.setOrganization(organization);
 
         organizationsRepository.save(organization);
