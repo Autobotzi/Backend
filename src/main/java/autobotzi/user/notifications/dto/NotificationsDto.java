@@ -1,8 +1,6 @@
-package autobotzi.user.dto;
+package autobotzi.user.notifications.dto;
 
-import autobotzi.user.utils.Role;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,15 +12,15 @@ import java.util.Date;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Builder
-public class UsersAdminViewDto {
+public class NotificationsDto {
 
-    private String name;
+    private String message;
 
-    @Email
-    private String email;
+    private Boolean unread;
 
-    private Role role;
-
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd ")
     private Date created_at;
+
+    private String user;
+    private String userReciver;
 }
