@@ -10,6 +10,6 @@ public interface UserRolesService {
     List<UsersRolesDto> getUsersRoles();
     List<UsersRolesDto> getUsersRolesByRole(String roleName);
     Integer getUsersRolesCount(String roleName);
-    void deleteUsersRole(String email);
-    UserRoles updateUsersRoleByUserEmail(UsersRolesUpdate usersRolesUpdate, String email);
+    void deleteUsersRole(UsersRolesDto usersRolesDto);
+    UserRoles updateUsersRoleByUserEmail(UsersRolesUpdate usersRolesUpdate);
 }

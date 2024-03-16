@@ -40,29 +40,14 @@ public class SecurityConfiguration {
                                         Role.DEPARTMENT_MANAGER.name())
                                 .requestMatchers("/projects/**").hasAnyAuthority(Role.ADMIN.name(),
                                         Role.PROJECT_MANAGER.name(),Role.DEPARTMENT_MANAGER.name(),Role.USER.name())
-                                .requestMatchers("/departments-members/**").hasAnyAuthority(Role.ADMIN.name(),
-                                        Role.DEPARTMENT_MANAGER.name())
                                 .requestMatchers("/organizations/**").hasAnyAuthority(Role.ADMIN.name())
                                 .requestMatchers("/roles/**").hasAnyAuthority(Role.ADMIN.name(),
                                         Role.DEPARTMENT_MANAGER.name())
                                 .requestMatchers("/skills/**").hasAnyAuthority(Role.ADMIN.name(),
                                         Role.DEPARTMENT_MANAGER.name(),Role.PROJECT_MANAGER.name(),Role.USER.name())
-                                .requestMatchers("/user-roles/**").hasAnyAuthority(Role.ADMIN.name())
-                                .requestMatchers("/user-skills/**").hasAnyAuthority(Role.ADMIN.name(),
-                                        Role.DEPARTMENT_MANAGER.name(),Role.PROJECT_MANAGER.name(),Role.USER.name())
-                                .requestMatchers("/user-roles/**").hasAnyAuthority(Role.ADMIN.name(),
-                                        Role.DEPARTMENT_MANAGER.name(),Role.PROJECT_MANAGER.name())
                                 .requestMatchers("/notifications/**").hasAnyAuthority(Role.ADMIN.name(),
                                         Role.DEPARTMENT_MANAGER.name(),Role.PROJECT_MANAGER.name(),Role.USER.name())
                                 .requestMatchers("/mail/**").hasAnyAuthority(Role.ADMIN.name())
-                                .requestMatchers("/skill-endorsements/**").hasAnyAuthority(Role.ADMIN.name(),
-                                        Role.DEPARTMENT_MANAGER.name(),Role.PROJECT_MANAGER.name(),Role.USER.name())
-                                .requestMatchers("/project-skills/**").hasAnyAuthority(Role.ADMIN.name(),
-                                        Role.DEPARTMENT_MANAGER.name(),Role.PROJECT_MANAGER.name(),Role.USER.name())
-                                .requestMatchers("/project-roles/**").hasAnyAuthority(Role.ADMIN.name(),
-                                        Role.DEPARTMENT_MANAGER.name(),Role.PROJECT_MANAGER.name(),Role.USER.name())
-                                .requestMatchers("/project-assignments/**").hasAnyAuthority(Role.ADMIN.name(),
-                                        Role.DEPARTMENT_MANAGER.name(),Role.PROJECT_MANAGER.name(),Role.USER.name())
                                 .requestMatchers("/swagger-ui/**", "/swagger-ui.html/**","/v3/api-docs/**").permitAll()
                                 .anyRequest().authenticated()).sessionManagement(manager ->
                         manager

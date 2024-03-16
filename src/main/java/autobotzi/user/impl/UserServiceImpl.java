@@ -94,10 +94,11 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(()-> new IllegalArgumentException("User skills not found"));
     }
     public List<UsersDto> getUsersByDepartment(String departmentName) {
-        Departments department = departmentsRepository.findByName(departmentName)
-                .orElseThrow(() -> new IllegalArgumentException("Department not found"));
-
-        return departmentsMembersRepository.findByDepartment(department).stream()
+        return departmentsMembersRepository.findByDepartment(
+                departmentsRepository.findByName(departmentName)
+                        .orElseThrow(()->
+                                new IllegalArgumentException("Department not found")))
+                .stream()
                 .map(departmentsMembers -> UsersDto.builder()
                         .name(departmentsMembers.getUser().getName())
                         .email(departmentsMembers.getUser().getEmail())

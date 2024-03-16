@@ -22,11 +22,11 @@ public class OrganizationsServiceImpl implements OrganizationsService {
     }
 
     public Organizations addOrganization(OrganizationsDto organizationsDto) {
-        Organizations organization = Organizations.builder()
+
+        return organizationsRepository.save(Organizations.builder()
                 .name(organizationsDto.getName())
                 .address(organizationsDto.getAddress())
-                .build();
-        return organizationsRepository.save(organization);
+                .build());
     }
 
     public void deleteOrganization(Long id) {

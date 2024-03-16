@@ -1,9 +1,7 @@
 package autobotzi.user.role.impl;
 
-import autobotzi.role.Roles;
 import autobotzi.role.RolesRepository;
 import autobotzi.user.UserRepository;
-import autobotzi.user.Users;
 import autobotzi.user.role.UserRoles;
 import autobotzi.user.role.UserRolesRepository;
 import autobotzi.user.role.UserRolesService;
@@ -24,16 +22,12 @@ public class UserRolesServiceImpl implements UserRolesService {
     private final RolesRepository rolesRepository;
 
     public UserRoles assignRoleToUser(UsersRolesDto usersRolesDto) {
-        Users user = userRepository.findByEmail(usersRolesDto.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        Roles role = rolesRepository.findByName(usersRolesDto.getRole())
-                .orElseThrow(() -> new IllegalArgumentException("Role not found"));
-
-        UserRoles usersRoles = new UserRoles();
-        usersRoles.setUser(user);
-        usersRoles.setRole(role);
-
-        return userRolesRepository.save(usersRoles);
+        return userRolesRepository.save(UserRoles.builder()
+                .user(userRepository.findByEmail(usersRolesDto.getEmail())
+                        .orElseThrow(() -> new IllegalArgumentException("User not found")))
+                .role(rolesRepository.findByName(usersRolesDto.getRole())
+                        .orElseThrow(() -> new IllegalArgumentException("Role not found")))
+                .build());
     }
 
     public List<UsersRolesDto> getUsersRoles() {
@@ -58,26 +52,21 @@ public class UserRolesServiceImpl implements UserRolesService {
         return userRolesRepository.findAllByRoleName(roleName).size();
     }
 
-    public void deleteUsersRole(String email) {
-        Users user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-
-        List<UserRoles> usersRolesList = userRolesRepository.findByUser(user);
-        userRolesRepository.deleteAll(usersRolesList);
+    public void deleteUsersRole(UsersRolesDto usersRolesDto) {
+        userRolesRepository.delete(UserRoles.builder()
+                .user(userRepository.findByEmail(usersRolesDto.getEmail())
+                        .orElseThrow(() -> new IllegalArgumentException("User not found")))
+                .role(rolesRepository.findByName(usersRolesDto.getRole())
+                        .orElseThrow(() -> new IllegalArgumentException("Role not found")))
+                .build());
     }
 
-    public UserRoles updateUsersRoleByUserEmail(UsersRolesUpdate usersRolesUpdate, String email) {
-        Users user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        Roles role = rolesRepository.findByName(usersRolesUpdate.getRole())
-                .orElseThrow(() -> new IllegalArgumentException("Role not found"));
-
-        UserRoles usersRoles = userRolesRepository.findByUser(user).stream()
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("User role not found"));
-        usersRoles.setRole(role);
-        usersRoles.setUser(user);
-
-        return userRolesRepository.save(usersRoles);
+    public UserRoles updateUsersRoleByUserEmail(UsersRolesUpdate usersRolesUpdate) {
+        return userRolesRepository.save(UserRoles.builder()
+                .user(userRepository.findByEmail(usersRolesUpdate.getUser())
+                        .orElseThrow(() -> new IllegalArgumentException("User not found")))
+                .role(rolesRepository.findByName(usersRolesUpdate.getRole())
+                        .orElseThrow(() -> new IllegalArgumentException("Role not found")))
+                .build());
     }
 }

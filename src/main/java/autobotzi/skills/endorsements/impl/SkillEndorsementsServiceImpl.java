@@ -12,7 +12,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,60 +24,53 @@ public class SkillEndorsementsServiceImpl implements SkillEndorsementsService {
     private final UserRepository userRepository;
     private final UserSkillsRepository userSkillsRepository;
     @Transactional
-    public SkillEndorsementsDto addEndorsementToUserSkill(String email, SkillEndorsementsDto skillEndorsementsDto) {
-        Users user = userRepository.findByEmail(email).orElseThrow(()->
-                new IllegalArgumentException("user not found"));
-        UserSkills userSkill = userSkillsRepository.findByUser(user).orElseThrow(()->
-                new IllegalArgumentException("userskill not found"));
-
-        SkillEndorsements skillEndorsements = SkillEndorsements.builder()
+    public SkillEndorsements addEndorsementToUserSkill(String email, SkillEndorsementsDto skillEndorsementsDto) {
+        return skillEndorsementsRepository.save(SkillEndorsements.builder()
                 .title(skillEndorsementsDto.getTitle())
                 .description(skillEndorsementsDto.getDescription())
                 .project(skillEndorsementsDto.getProjectLink())
-                .userSkill(userSkill)
-                .build();
-
-        skillEndorsementsRepository.save(skillEndorsements);
-
-        return skillEndorsementsDto;
+                .userSkill(userSkillsRepository
+                        .findByUser(userRepository
+                                .findByEmail(email).orElseThrow())
+                        .orElseThrow(()->
+                                new IllegalArgumentException("userskill not found")))
+                .build());
     }
     @Transactional
     public List<SkillEndorsementsDto> getAllEndorsementsOfUser(String email) {
-        Users user = userRepository.findByEmail(email).orElseThrow();
-        UserSkills userSkill = userSkillsRepository.findByUser(user).orElseThrow();
-        Optional<SkillEndorsements> skillEndorsements = skillEndorsementsRepository
-                .findByUserSkill(userSkill);
-        return skillEndorsements.stream()
-                .map(skillEndorsement -> SkillEndorsementsDto.builder()
-                        .title(skillEndorsement.getTitle())
-                        .description(skillEndorsement.getDescription())
-                        .projectLink(skillEndorsement.getProject())
+        return skillEndorsementsRepository.findAll().stream()
+                .filter(skillEndorsements -> skillEndorsements.getUserSkill().getUser().getEmail().equals(email))
+                .map(skillEndorsements -> SkillEndorsementsDto.builder()
+                        .title(skillEndorsements.getTitle())
+                        .description(skillEndorsements.getDescription())
+                        .projectLink(skillEndorsements.getProject())
                         .build())
                 .collect(Collectors.toList());
     }
     @Transactional
     public SkillEndorsements updateSkillEndorsementsByTitle(String email, String title, SkillEndorsementsDto skillEndorsementsDto) {
-        Users user = userRepository.findByEmail(email).orElseThrow(()->
-                new IllegalArgumentException("user not found"));
-        UserSkills userSkill = userSkillsRepository.findByUser(user).orElseThrow(()->
-                new IllegalArgumentException("userskill not found"));
-        SkillEndorsements skillEndorsements = skillEndorsementsRepository.findByUserSkill(userSkill).orElseThrow();
-        skillEndorsements.setTitle(skillEndorsementsDto.getTitle());
-        skillEndorsements.setDescription(skillEndorsementsDto.getDescription());
-        skillEndorsements.setProject(skillEndorsementsDto.getProjectLink());
-        return skillEndorsementsRepository.save(skillEndorsements);
+        return skillEndorsementsRepository.findByUserSkill(userSkillsRepository
+                .findByUser(userRepository
+                        .findByEmail(email).orElseThrow())
+                .orElseThrow(()->
+                        new IllegalArgumentException("userskill not found")))
+                .map(skillEndorsements -> {
+                    skillEndorsements.setTitle(skillEndorsementsDto.getTitle());
+                    skillEndorsements.setDescription(skillEndorsementsDto.getDescription());
+                    skillEndorsements.setProject(skillEndorsementsDto.getProjectLink());
+                    return skillEndorsementsRepository.save(skillEndorsements);
+                }).orElseThrow(()->new IllegalArgumentException("userskill not found"));
     }
     @Transactional
     public void deleteSkillEndorsementsByTitle(String email, String title) {
-       Users user= userRepository.findByEmail(email).orElseThrow(()
-               ->new IllegalArgumentException("user not found"));
-       UserSkills userSkills=userSkillsRepository.findByUser(user)
-               .orElseThrow(()->new IllegalArgumentException("userskill not found"));
-       SkillEndorsements skillEndorsement= skillEndorsementsRepository
-               .findByUserSkill(userSkills).orElseThrow(()
-               ->new IllegalArgumentException("userskill not found"));
-
-       skillEndorsementsRepository.delete(skillEndorsement);
+       skillEndorsementsRepository.delete(SkillEndorsements.builder()
+               .title(title)
+               .userSkill(userSkillsRepository
+                       .findByUser(userRepository
+                               .findByEmail(email).orElseThrow())
+                       .orElseThrow(()->
+                               new IllegalArgumentException("userskill not found")))
+               .build());
     }
 
 }

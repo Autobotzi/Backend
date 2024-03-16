@@ -1,4 +1,4 @@
-package autobotzi.user.role.dto;
+package autobotzi.skills.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,8 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Builder
-public class UsersRolesUpdate {
-    private String role;
-    private String user;
-}
+public class SkillsDtoDelete {
 
+        private String name;
+        private String user;
+}

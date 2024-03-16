@@ -36,41 +36,33 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final JwtService jwtService;
     private final OrganizationsRepository organizationsRepository;
     public Users signUpUser(SignUpRequest user, String adminEmail) {
-
-        Users admin = userRepository.findByEmail(adminEmail).orElseThrow(() -> new IllegalArgumentException("Admin not found"));
-
-        if (admin.getRole() != Role.ADMIN) {
-            throw new IllegalArgumentException("Provided user is not an admin");
-        }
-
-        Users newUser = new Users();
-        newUser.setEmail(user.getEmail());
-        newUser.setName(user.getName());
-        newUser.setRole(Role.USER);
-        newUser.setPassword(passwordEncoder.encode(user.getPassword()));
-        newUser.setOrganization(admin.getOrganization());
-
-        return userRepository.save(newUser);
+        return userRepository.save(Users.builder()
+                .email(user.getEmail())
+                .name(user.getName())
+                .role(Role.USER)
+                .password(passwordEncoder.encode(user.getPassword()))
+                .organization(userRepository.findByEmail(adminEmail)
+                        .filter(admin -> admin.getRole() == Role.ADMIN)
+                        .orElseThrow(() -> new IllegalArgumentException("Admin not found"))
+                        .getOrganization())
+                .build());
     }
     public Users resetPassword(String email, String newPassword) {
-        Users user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-
-        user.setPassword(passwordEncoder.encode(newPassword));
-
-        return userRepository.save(user);
+        return userRepository.save(userRepository.findByEmail(email)
+                .map(user -> {
+                    user.setPassword(passwordEncoder.encode(newPassword));
+                    return user;
+                })
+                .orElseThrow(() -> new IllegalArgumentException("User not found")));
     }
     public Users SignUpAdmin(SignUpAdminRequest signUpAdminRequest) {
-        Users newAdmin = new Users();
-        newAdmin.setEmail(signUpAdminRequest.getSignUpRequest().getEmail());
-        newAdmin.setName(signUpAdminRequest.getSignUpRequest().getName());
-        newAdmin.setRole(Role.ADMIN);
-        newAdmin.setPassword(passwordEncoder.encode(signUpAdminRequest.getSignUpRequest().getPassword()));
-        Organizations organization = mapToEntity(signUpAdminRequest.getOrganizationsDto());
-        newAdmin.setOrganization(organization);
-
-        organizationsRepository.save(organization);
-        return userRepository.save(newAdmin);
+        return userRepository.save(Users.builder()
+                .email(signUpAdminRequest.getSignUpRequest().getEmail())
+                .name(signUpAdminRequest.getSignUpRequest().getName())
+                .role(Role.ADMIN)
+                .password(passwordEncoder.encode(signUpAdminRequest.getSignUpRequest().getPassword()))
+                .organization(mapToEntity(signUpAdminRequest.getOrganizationsDto()))
+                .build());
 
     }
 

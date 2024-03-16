@@ -51,43 +51,36 @@ public class DepartmentsServiceImpl implements DepartmentsService {
     }
 
     public Departments addDepartment(DepartmentsDto departmentsDto, String adminEmail) {
-        Users admin = userRepository.findByEmail(adminEmail)
-                .orElseThrow(() -> new IllegalArgumentException("Admin not found"));
-
-        Departments department = Departments.builder()
+        return departmentsRepository.save(Departments.builder()
                 .name(departmentsDto.getName())
                 .description(departmentsDto.getDescription())
-                .organization(admin.getOrganization())
-                .build();
-
-        return departmentsRepository.save(department);
+                .user(userRepository.findByEmail(adminEmail)
+                        .orElseThrow(() -> new IllegalArgumentException("User not found")))
+                .build());
     }
     public Departments updateDepartmentManager(String email, String departmentName) {
-        Users user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        user.setRole(Role.DEPARTMENT_MANAGER);
-        userRepository.save(user);
-
-        Departments department = departmentsRepository.findByName(departmentName)
-                .orElseThrow(() -> new IllegalArgumentException("Department not found"));
-
-        DepartmentsMembers departmentsMembers = new DepartmentsMembers();
-        departmentsMembers.setUser(user);
-        departmentsMembers.setDepartment(department);
-        departmentsMembersRepository.save(departmentsMembers);
-
-        department.setUser(user);
-
-        return departmentsRepository.save(department);
+        return departmentsRepository.save(
+                userRepository.findByEmail(email)
+                        .map(user -> departmentsRepository.findByName(departmentName)
+                                .map(department -> {
+                                    department.setUser(user);
+                                    return department;
+                                })
+                                .orElseThrow(() -> new IllegalArgumentException("Department not found")))
+                        .orElseThrow(() -> new IllegalArgumentException("User not found")));
     }
 
-    public void updateDepartmentByDepartmentName(String name,DepartmentsDto departmentsDto) {
-        Departments department = departmentsRepository.findByName(name)
-                .orElseThrow(() -> new IllegalArgumentException("Department not found"));
-        department.setName(departmentsDto.getName());
-        department.setDescription(departmentsDto.getDescription());
-        departmentsRepository.save(department);
+    public Departments updateDepartmentByDepartmentName(String name,DepartmentsDto departmentsDto) {
+        return departmentsRepository.save(
+                departmentsRepository.findByName(name)
+                        .map(department -> {
+                            department.setName(departmentsDto.getName());
+                            department.setDescription(departmentsDto.getDescription());
+                            return department;
+                        })
+                        .orElseThrow(() -> new IllegalArgumentException("Department not found")));
+
     }
     public void deleteDepartment(Long id) {
         departmentsRepository.deleteById(id);

@@ -32,18 +32,17 @@ public class RolesServiceImpl implements RolesService {
     }
     @PreAuthorize("hasRole('ADMIN')")
     public void updateRole(RolesDto role, String name) {
-        Roles roles = rolesRepository.findByName(name)
+        rolesRepository.findByName(name)
+                .map(roles -> {
+                    roles.setName(role.getName());
+                    return rolesRepository.save(roles);
+                })
                 .orElseThrow(() -> new IllegalArgumentException("Role not found"));
-        roles.setName(role.getName());
-        rolesRepository.save(roles);
     }
     @PreAuthorize("hasRole('ADMIN')")
     public void deleteRole(String name) {
-
-        Roles roles = rolesRepository.findByName(name)
-                .orElseThrow(() -> new IllegalArgumentException("Role not found"));
-
-        rolesRepository.delete(roles);
+        rolesRepository.delete(rolesRepository.findByName(name)
+                .orElseThrow(() -> new IllegalArgumentException("Role not found")));
     }
 
 }
