@@ -23,6 +23,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/projects")
 @RequiredArgsConstructor
+@CrossOrigin(origins = {"http://localhost:3000"
+        ,"http://atc-2024-autobotzi-fe-linux-web-app.azurewebsites.net/"
+        ,"https://frontend-jf48yfydc-eduard-ionel-eduards-projects.vercel.app/"
+        ,"https://front-autobotzi-c55123365842.herokuapp.com/"})
+
 public class ProjectsController {
 
     private final ProjectsService projectsService;
@@ -35,7 +40,11 @@ public class ProjectsController {
         String email = userDetails.getUsername();
         return projectsService.createProject(email, projectsDto);
     }
-
+    @GetMapping("/organization")
+    public List<ProjectsDto> getAllProjectsFromOrganization(@AuthenticationPrincipal UserDetails userDetails) {
+        String email = userDetails.getUsername();
+        return projectsService.getAllProjectsFromOrganization(email);
+    }
     @PutMapping
     public Projects updateProjectStatus(@AuthenticationPrincipal UserDetails userDetails, @RequestParam String name
             , @RequestBody ProjectUpdate projectUpdate) {
@@ -87,7 +96,7 @@ public class ProjectsController {
     }
 
     @DeleteMapping
-    public Projects deleteProject(@PathVariable String name) {
+    public Projects deleteProject(@RequestParam String name) {
         return projectsService.deleteProject(name);
     }
 

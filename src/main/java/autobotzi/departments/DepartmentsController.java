@@ -14,6 +14,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/departments")
 @RequiredArgsConstructor
+@CrossOrigin(origins = {"http://localhost:3000"
+        ,"http://atc-2024-autobotzi-fe-linux-web-app.azurewebsites.net/"
+        ,"https://frontend-jf48yfydc-eduard-ionel-eduards-projects.vercel.app/"
+        ,"https://front-autobotzi-c55123365842.herokuapp.com/"})
 public class DepartmentsController {
 
     private final DepartmentsService departmentsService;
@@ -22,6 +26,10 @@ public class DepartmentsController {
     @GetMapping("/all")
     public List<DepartmentsResponse> getAllDepartments() {
         return departmentsService.getAllDepartments();
+    }
+    @GetMapping("/all-organizations")
+    public List<DepartmentsResponse> getAllDepartmentsOrganizetions(@AuthenticationPrincipal UserDetails userDetails) {
+        return departmentsService.getAllDepartmentsOrganizations(userDetails.getUsername());
     }
     @GetMapping("/all-admin-view")
     public List<DepartmentAdminView> getDepartments() {

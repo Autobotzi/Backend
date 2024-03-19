@@ -50,11 +50,13 @@ public class DepartmentsServiceImpl implements DepartmentsService {
                 .collect(Collectors.toList());
     }
 
-    public Departments addDepartment(DepartmentsDto departmentsDto, String adminEmail) {
+    public Departments addDepartment(DepartmentsDto departmentsDto, String email) {
         return departmentsRepository.save(Departments.builder()
                 .name(departmentsDto.getName())
                 .description(departmentsDto.getDescription())
-                        .organization(userRepository.findByEmail(adminEmail)
+                .user(userRepository.findByEmail(email)
+                        .orElseThrow(() -> new IllegalArgumentException("User not found")))
+                .organization(userRepository.findByEmail(email)
                                 .map(user -> {
                                     if (user.getRole().equals(Role.ADMIN)) {
                                         return user.getOrganization();
@@ -65,6 +67,7 @@ public class DepartmentsServiceImpl implements DepartmentsService {
                                 .orElseThrow(() -> new IllegalArgumentException("User not found")))
                 .build());
     }
+
     public Departments updateDepartmentManager(String email, String departmentName) {
 
         return departmentsRepository.save(
@@ -88,6 +91,25 @@ public class DepartmentsServiceImpl implements DepartmentsService {
                         })
                         .orElseThrow(() -> new IllegalArgumentException("Department not found")));
 
+    }
+    public List<DepartmentsResponse> getAllDepartmentsOrganizations(String email) {
+        Users user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        return departmentsRepository.findAll().stream()
+                .filter(department -> department.getOrganization() != null &&
+                        department.getOrganization().equals(user.getOrganization()))
+                .map(department -> {
+                    DepartmentsResponse departmentDto = new DepartmentsResponse();
+                    departmentDto.setName(department.getName());
+                    departmentDto.setDescription(department.getDescription());
+                    Users departmentUser = department.getUser();
+                    if (departmentUser != null) {
+                        departmentDto.setDepartmentManager(departmentUser.getName());
+                    }
+                    return departmentDto;
+                })
+                .collect(Collectors.toList());
     }
     public void deleteDepartment(Long id) {
         departmentsRepository.deleteById(id);
