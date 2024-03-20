@@ -34,6 +34,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     private final JwtService jwtService;
+    private final OrganizationsRepository organizationsRepository;
 
     public Users signUpUser(SignUpRequest user, String adminEmail) {
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
@@ -59,14 +60,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found")));
     }
     public Users SignUpAdmin(SignUpAdminRequest signUpAdminRequest) {
+        Organizations organization = mapToEntity(signUpAdminRequest.getOrganizationsDto());
+        organization = organizationsRepository.save(organization);
+
         return userRepository.save(Users.builder()
                 .email(signUpAdminRequest.getSignUpRequest().getEmail())
                 .name(signUpAdminRequest.getSignUpRequest().getName())
                 .role(Role.ADMIN)
                 .password(passwordEncoder.encode(signUpAdminRequest.getSignUpRequest().getPassword()))
-                .organization(mapToEntity(signUpAdminRequest.getOrganizationsDto()))
+                .organization(organization)
                 .build());
-
     }
 
     public JwtAuthenticationResponse signIn(SignInRequest signInRequest) {

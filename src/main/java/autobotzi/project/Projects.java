@@ -51,7 +51,6 @@ public class Projects {
     @JoinColumn(name = "organization_id")
     private Organizations organization;
 
-    @OneToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private Users user;
 
