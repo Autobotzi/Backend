@@ -17,6 +17,7 @@ import autobotzi.user.dto.UsersPreViewDto;
 import autobotzi.user.notifications.NotificationsRepository;
 import autobotzi.user.skill.UserSkillsRepository;
 import autobotzi.user.utils.Role;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -62,15 +63,18 @@ public class UserServiceImpl implements UserService {
                 .collect(java.util.stream.Collectors.toList());
     }
 
-    public List<UsersPreViewDto> getAllPreView() {
+    public List<UsersPreViewDto> getAllPreView(String email) {
+        Users user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
         return userRepository.findAll().stream()
-                .map(user -> UsersPreViewDto.builder()
-                        .name(user.getName())
-                        .email(user.getEmail())
+                .filter(u -> u.getOrganization().equals(user.getOrganization()))
+                .map(u -> UsersPreViewDto.builder()
+                        .name(u.getName())
+                        .email(u.getEmail())
                         .build())
                 .collect(java.util.stream.Collectors.toList());
     }
-
     public List<UsersAdminViewDto> getAllAdminView() {
         return userRepository.findAll().stream()
                 .map(user -> UsersAdminViewDto.builder()
@@ -182,6 +186,21 @@ public class UserServiceImpl implements UserService {
         }
         departments.setUser(null);
         departmentsRepository.save(departments);
+    }
+    @Transactional
+    public void deleteUserFromEverywhere(String email) {
+        Users user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        deallocatePM(user);
+        notificationsRepository.deleteByUser(user);
+        userSkillsRepository.deleteByUser(user);
+        deallocateDM(user);
+        departmentsMembersRepository.deleteByUser(user);
+        projectAssignmentsRepository.deleteByUser(user);
+        skillsRepository.deleteByUser(user);
+
+        userRepository.delete(user);
     }
 
 }

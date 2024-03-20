@@ -15,7 +15,7 @@ public interface UserService {
 
     List<UsersOrganizationsDto> getAllUsersWithOrganizations();
 
-    List<UsersPreViewDto> getAllPreView();
+    List<UsersPreViewDto> getAllPreView(String email);
     List<UsersDto> getUsersByRole(Role role);
     List<Role> getAllRoles();
     UsersDto updateUserRole(String email, Role role);
@@ -23,4 +23,5 @@ public interface UserService {
     UsersDto updateUserByEmail(String email, String name);
     List<UsersDto> getUsersByDepartment(String departmentName);
     Users deleteUserByEmail(String email);
+    void deleteUserFromEverywhere(String email);
 }
